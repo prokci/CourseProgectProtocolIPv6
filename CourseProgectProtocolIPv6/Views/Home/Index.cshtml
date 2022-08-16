@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Главная";
+}
+<section class="breadcrumbs">
+  <div class="container">
+
+    <div class="d-flex justify-content-between align-items-center">
+      <h2>@ViewData["Title"]</h2>
+      <ol>
+        <li><a asp-area="" asp-controller="Home" asp-action="Index">Главная</a></li>
+      </ol>
+    </div>
+
+  </div>
+</section>
+      
+
+<section id="services" class="services section-bg">
+    <div class="container" data-aos="fade-up">
+           <div class="section-title">
+                <h2>Все статьи</h2>
+           </div>
+        
+            <div class="row gy-4">
+            @{
+                int counter = 0;
+                int i = -1;
+            }
+                @foreach (string[] l in ViewBag.Oll) {
+                    { counter += 100;
+                    i++;
+                    if (counter == 400)
+                    { counter = 100; }
+                }
+                    
+                <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="@counter">
+                    <div class="icon-box iconbox-blue">
+                        
+              
+                      <h4><a class="nav-link scrollto" asp-area="" asp-controller="Home" asp-action="NewsOpen"
+                          asp-route-Id="@i" >
+                          @(l[0].Count() <= 61 ? l[0] : l[0].Substring(0,60))</a></h4>
+                      <p>@Html.Raw(l[1].Count() <= 301 ? l[1] : l[1].Substring(0,300))</p>
+                      <p></p>
+                    </div>
+                </div>
+                }
+          </div>
+          
+ 
+      
+    </div>
+</section>

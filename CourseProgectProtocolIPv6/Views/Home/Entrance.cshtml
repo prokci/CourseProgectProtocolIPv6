@@ -1,0 +1,212 @@
+﻿@{
+    ViewData["Title"] = "Личная страница";
+}
+<section class="breadcrumbs">
+  <div class="container">
+
+    <div class="d-flex justify-content-between align-items-center">
+      <h2>@ViewData["Title"]</h2>
+      <ol>
+        <li><a asp-area="" asp-controller="Home" asp-action="Index">Главная</a></li>
+        <li>@ViewData["Title"]</li>
+      </ol>
+    </div>
+
+  </div>
+</section>
+<div class="container">
+
+  <div class="row">
+    
+
+    <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content" data-aos="fade-right">
+        <h3>
+            @User.Identity.Name
+        </h3>
+            <a class="nav-link scrollto" asp-area="" asp-controller="Account" asp-action="Login">Сменить акаунт</a>
+            @if (ViewBag.RoleId == 1)
+            {
+                <table class = "table table-striped table-responsive table-hover">
+                    <tr>
+                        <th>Номер</th> 
+                        <th>Email</th> 
+                        <th>Пароль</th> 
+                        <th>Доступ</th> 
+                    </tr>
+
+                    @foreach (List<object> l in ViewBag.Table)
+                    {
+                        <tr>
+                            <td>@l[0].ToString()</td> 
+                            <td>@l[1].ToString()</td> 
+                            <td>@l[2].ToString()</td> 
+                            <td>
+                            @if (l[3].ToString() == "1")
+                            {
+                                <p>Администратор</p>
+                            }else if(l[3].ToString() == "2"){
+                                <form asp-area="" asp-controller="Home" asp-action="SetRoleId" 
+                                asp-route-id = "@int.Parse(l[0].ToString())"
+                                asp-route-roleId = "3">
+                                  <div class="form-group">
+                                      <input type="submit" value="Открыть доступ" class="btn btn-primary" />
+                                   </div>
+                                 </form>
+                            }else if(l[3].ToString() == "3"){
+                                <form asp-area="" asp-controller="Home" asp-action="SetRoleId" 
+                                asp-route-id = "@int.Parse(l[0].ToString())"
+                                asp-route-roleId = "2">
+                                  <div class="form-group">
+                                      <input type="submit" value="Закрыть доступ" class="btn btn-primary" />
+                                   </div>
+                                 </form>
+                            }
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+            
+
+
+        
+    </div>
+    <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content" data-aos="fade-right">
+    </div>
+  </div>
+</div>
+
+
+@if(ViewBag.RoleId == 1 || ViewBag.RoleId == 3)
+{
+  <section id="services" class="services section-bg">
+    <div class="container" data-aos="fade-up">
+           <div class="section-title">
+                <br>
+                <h2>Новости</h2>
+                <p>все</p>
+           </div>
+        
+            <div class="row gy-4">
+            @{
+                int counter = 0;
+                int i = -1;
+            }
+                @foreach (object[] l in ViewBag.News) {
+                    { counter += 100;
+                    i++;
+                    if (counter == 400)
+                    { counter = 100; }
+                }
+                    
+                <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="@counter">
+                    <div class="icon-box iconbox-blue">
+                        
+              
+                      <h4><a class="nav-link scrollto" asp-area="" asp-controller="Home" asp-action="NewsOpen"
+                          asp-route-Id="@i" >
+                          @(l[0].ToString().Length <= 61 ? l[1] : l[1].ToString().Substring(0,60))</a></h4>
+                      <p>@Html.Raw(l[2].ToString().Length <= 251 ? l[2] : l[2].ToString().Substring(0,250))</p>
+                      <br>
+                      <form asp-area="" asp-controller="Home" asp-action="NewsEdit"
+                          asp-route-id="@i" 
+                          asp-route-isEditOrNew ="@true"
+                          asp-route-idAuthor ="@ViewBag.IdAuthor"
+                          method="post">
+                       <input class ="btn btn-primary"type="submit" value="Изменить">
+                     </form>
+                    </div>
+                </div>
+                }
+                <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="@counter">
+                    <div class="icon-box iconbox-blue">
+                        
+              
+                      <h4>
+                          Создать новую</h4>
+                      
+                      
+                      <br>
+                      <form asp-area="" asp-controller="Home" asp-action="NewsEdit"
+                          asp-route-id="@ViewBag.News.Count" 
+                          asp-route-isEditOrNew ="@false"
+                          asp-route-idAuthor ="@ViewBag.IdAuthor"
+                          method="post">
+                       <input class ="btn btn-primary"type="submit" value="Создать">
+                     </form>
+                    </div>
+                </div>
+
+          </div>
+          
+ 
+      
+    </div>
+</section>
+}
+
+@if(ViewBag.RoleId == 2)
+{
+     <section id="services" class="services section-bg">
+    <div class="container" data-aos="fade-up">
+           <div class="section-title">
+                <br>
+                <h2>Новости IPv6</h2>
+                <p>Созданые вами</p>
+           </div>
+        
+            <div class="row gy-4">
+                @{
+                    int counter = 0;
+
+                }
+                @for (int i = 0; i < ViewBag.Index.Count; i++) {
+                    { counter += 100;
+
+                        if (counter == 400)
+                        { counter = 100; }
+                    }
+
+                    <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="@counter">
+                        <div class="icon-box iconbox-blue">
+                        
+              
+                      <h4><a class="nav-link scrollto" asp-area="" asp-controller="Home" asp-action="NewsOpen"
+                          asp-route-Id="@i" >
+                          @(ViewBag.News[ViewBag.Index[i]][1].ToString().Length <= 61 ? ViewBag.News[ViewBag.Index[i]][1] : ViewBag.News[ViewBag.Index[i]][1].ToString().Substring(0,60))</a></h4>
+                      <p>@Html.Raw(ViewBag.News[ViewBag.Index[i]][2].ToString().Length <= 251 ? ViewBag.News[ViewBag.Index[i]][2] : ViewBag.News[ViewBag.Index[i]][2].ToString().Substring(0,250))</p>
+                      <br>
+                      <form asp-area="" asp-controller="Home" asp-action="NewsEdit"
+                          asp-route-id="@ViewBag.Index[i]" 
+                          asp-route-isEditOrNew ="@true"
+                          asp-route-idAuthor ="@ViewBag.IdAuthor"
+                          method="post">
+                       <input class ="btn btn-primary"type="submit" value="Изменить">
+                     </form>
+                    </div>
+                </div>
+                }
+                <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="@counter">
+                    <div class="icon-box iconbox-blue">
+                        
+              
+                      <h4>
+                          Создать новую</h4>
+                      <br>
+                      <form asp-area="" asp-controller="Home" asp-action="NewsEdit"
+                          asp-route-id="@ViewBag.News.Count" 
+                          asp-route-isEditOrNew ="@false"
+                          asp-route-idAuthor ="@ViewBag.IdAuthor"
+                          method="post">
+                       <input class ="btn btn-primary"type="submit" value="Создать">
+                     </form>
+                    </div>
+                </div>
+
+          </div>
+          
+ 
+      
+    </div>
+</section>
+}
